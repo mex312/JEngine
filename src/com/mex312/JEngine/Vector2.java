@@ -1,8 +1,8 @@
 package com.mex312.JEngine;
 
 public class Vector2 {
-    public float x;
-    public float y;
+    public final float x;
+    public final float y;
 
     public Vector2() {
         x = 0;

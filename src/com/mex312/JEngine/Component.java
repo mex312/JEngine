@@ -6,5 +6,6 @@ public class Component extends EObject{
     public Component (String name, GameObject gameObject) {
         super(name);
         this.gameObject = gameObject;
+        gameObject.addComponent(this);
     }
 }

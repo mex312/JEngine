@@ -18,13 +18,13 @@ public abstract class Drawable extends Component{
     }
 
     public Vector2 getLocalPosition() {
-        return position.clone();
+        return position;
     }
     public Vector2 getLocalRotation() {
-        return rotation.clone();
+        return rotation;
     }
     public Vector2 getLocalSize() {
-        return size.clone();
+        return size;
     }
 
     public Drawable(String name, GameObject gameObject) {

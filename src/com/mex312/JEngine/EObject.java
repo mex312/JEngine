@@ -1,13 +1,18 @@
 package com.mex312.JEngine;
 
 public class EObject {
-    private final String name;
+    private static long nextEmptyId;
+    private static long getNewId(){
+        nextEmptyId++;
+        return nextEmptyId - 1;
+    }
+
+    public final long id;
+    public final String name;
 
     public EObject(String name) {
         this.name = name;
-    }
-
-    public String getName() {
-        return name;
+        id = getNewId();
+        Core.onNewObjectCreated(this);
     }
 }

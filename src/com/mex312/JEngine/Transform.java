@@ -4,10 +4,12 @@ import org.w3c.dom.traversal.TreeWalker;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 
 public class Transform {
     private Transform parent = null;
-    private final Collection<Transform> children = new HashSet<>();
+    private final Collection<Transform> children = new LinkedHashSet<>();
     private final GameObject gameObject;
 
     private Vector2 position = new Vector2();
@@ -16,69 +18,69 @@ public class Transform {
 
     public void setGlobalPosition(Vector2 newPosition) {
         if(parent == null) {
-            position = newPosition.clone();
+            position = newPosition;
         } else {
             position = newPosition.subtract(parent.getGlobalPosition());
         }
     }
     public void setLocalPosition(Vector2 newPosition) {
-        position = newPosition.clone();
+        position = newPosition;
     }
 
     public void setGlobalRotation(Vector2 newRotation) {
         if(parent == null) {
-            rotation = newRotation.clone();
+            rotation = newRotation;
         } else {
             rotation = newRotation.subtract(parent.getGlobalRotation());
         }
     }
     public void setLocalRotation(Vector2 newRotation) {
-        rotation = newRotation.clone();
+        rotation = newRotation;
     }
 
     public void setGlobalSize(Vector2 newSize) {
         if(parent == null) {
-            size = newSize.clone();
+            size = newSize;
         } else {
             size = newSize.divideEach(parent.getGlobalSize());
         }
     }
     public void setLocalSize(Vector2 newSize) {
-        size = newSize.clone();
+        size = newSize;
     }
 
 
     public Vector2 getGlobalPosition() {
         if(parent == null) {
-            return position.clone();
+            return position;
         } else {
             return parent.getGlobalPosition().add(position);
         }
     }
     public Vector2 getLocalPosition() {
-        return position.clone();
+        return position;
     }
 
     public Vector2 getGlobalRotation() {
         if(parent == null) {
-            return rotation.clone();
+            return rotation;
         } else {
             return parent.getGlobalRotation().add(rotation);
         }
     }
     public Vector2 getLocalRotation() {
-        return rotation.clone();
+        return rotation;
     }
 
     public Vector2 getGlobalSize() {
         if(parent == null) {
-            return size.clone();
+            return size;
         } else {
             return parent.getGlobalSize().multiplyEach(size);
         }
     }
     public Vector2 getLocalSize() {
-        return size.clone();
+        return size;
     }
 
 
@@ -98,7 +100,7 @@ public class Transform {
 
     public Transform getChildFromName(String name) {
         for(Transform child : children) {
-            if(child.gameObject.getName().equals(name)) {
+            if(child.gameObject.name.equals(name)) {
                 return child;
             }
         }
