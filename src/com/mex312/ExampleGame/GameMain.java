@@ -9,6 +9,41 @@ import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 
 public class GameMain {
+    public static class Rectangle extends Drawable {
+        private final Color color;
+
+        public Rectangle(String name, GameObject gameObject, Color color) {
+            super(name, gameObject);
+            this.color = color;
+        }
+
+        @Override
+        public void draw(Graphics2D graphics) {
+            Vector2 size = getGlobalSize();
+            Vector2 pos = getGlobalPosition();
+            graphics.setColor(color);
+            graphics.fillRect((int) (pos.x - size.x/2), (int) (pos.y - size.y/2), (int) size.x, (int) size.y);
+        }
+    }
+
+    public static class Ellipse extends Drawable {
+        private final Color color;
+
+        public Ellipse(String name, GameObject gameObject, Color color) {
+            super(name, gameObject);
+            this.color = color;
+        }
+
+        @Override
+        public void draw(Graphics2D graphics) {
+            Vector2 size = getGlobalSize();
+            Vector2 pos = getGlobalPosition();
+            graphics.setColor(color);
+            graphics.fillOval((int) (pos.x - size.x/2), (int) (pos.y - size.y/2), (int) size.x, (int) size.y);
+        }
+    }
+
+
     public static void main(String[] args) {
         JFrame frame = new JFrame("game");
 
@@ -21,15 +56,7 @@ public class GameMain {
 
         GameObject wall = new GameObject("Wall");
         wall.transform.setGlobalSize(new Vector2(100, 100));
-        Drawable square = new Drawable("Square", wall) {
-            @Override
-            public void draw(@NotNull Graphics2D graphics) {
-                Vector2 size = getGlobalSize();
-                Vector2 pos = getGlobalPosition();
-                graphics.setColor(Color.WHITE);
-                graphics.fillRect((int) (pos.x - size.x/2), (int) (pos.y - size.y/2), (int) size.x, (int) size.y);
-            }
-        };
+        Drawable square = new Rectangle("Square", wall, Color.WHITE);
         wall.transform.setGlobalPosition(new Vector2(0, 0));
         Behavior controller = new Behavior("Player Controller", wall) {
             @Override
@@ -41,20 +68,16 @@ public class GameMain {
                 ).normalized().multiply(400 * Time.deltaTime())));
             }
         };
+        GameObject head = new GameObject("Head");
+        head.transform.setLocalPosition(new Vector2(0, 100));
+        Drawable circle = new Ellipse("Circle", head, Color.GRAY);
+        head.transform.setParent(wall.transform);
 
         GameObject wall2 = new GameObject("Wall2");
         wall2.transform.setGlobalSize(new Vector2(200, 100));
         wall2.transform.setGlobalPosition(new Vector2(300, 0));
         wall2.transform.setGlobalZ(1);
-        Drawable square2 = new Drawable("Square", wall2) {
-            @Override
-            public void draw(@NotNull Graphics2D graphics) {
-                Vector2 size = getGlobalSize();
-                Vector2 pos = getGlobalPosition();
-                graphics.setColor(Color.GREEN);
-                graphics.fillRect((int) (pos.x - size.x/2), (int) (pos.y - size.y/2), (int) size.x, (int) size.y);
-            }
-        };
+        Drawable square2 = new Rectangle("Square", wall2, Color.GREEN);
 
         frame.addKeyListener(new AWTKeyAdapter());
         frame.setContentPane(cameraComp.cameraPanel);
