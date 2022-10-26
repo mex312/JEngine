@@ -4,6 +4,7 @@ public class Vector2 {
     public final float x;
     public final float y;
 
+
     public Vector2() {
         x = 0;
         y = 0;
@@ -11,6 +12,19 @@ public class Vector2 {
     public Vector2(float x, float y){
         this.x = x;
         this.y = y;
+    }
+
+    public float getLength() {
+        return (float)Math.sqrt(x*x + y*y);
+    }
+
+    public Vector2 normalized() {
+        float length = getLength();
+        if(length != 0) {
+            return new Vector2(x / length, y / length);
+        } else {
+            return new Vector2();
+        }
     }
 
     @Override
@@ -52,5 +66,9 @@ public class Vector2 {
 
     public Vector2 divide(float n) {
         return new Vector2(this.x / n, this.y / n);
+    }
+
+    public String toString() {
+        return String.format("[%f, %f]", x, y);
     }
 }

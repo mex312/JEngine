@@ -1,6 +1,8 @@
 package com.mex312.JEngine;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.logging.Logger;
@@ -12,12 +14,17 @@ public class Core {
             while(true) {
                 if(isEngineRunning) {
                     try {
+                        Time.update();
                         for(Behavior behavior : behaviors) {
                             behavior.Update();
                         }
                         for(Camera camera : cameras) {
-                            camera.drawAll(drawables);
+                            ArrayList<Drawable> drawablesAsList = new ArrayList<>(drawables);
+                            drawablesAsList.sort((Drawable first, Drawable second) -> (int)(first.getGlobalZ() - second.getGlobalZ()));
+                            camera.drawAll(drawablesAsList);
                         }
+
+                        Inputs.updateKeyDown();
                     } catch (Throwable ex) {
                         ex.printStackTrace();
                     }
@@ -49,6 +56,7 @@ public class Core {
 
     public static void startEngine() {
         coreThread.start();
+        Time.initialize();
     }
 
     public static void enableEngine() {

@@ -12,9 +12,32 @@ public class Transform {
     private final Collection<Transform> children = new LinkedHashSet<>();
     private final GameObject gameObject;
 
+    private float z = 0;
+    private float rotation = 0;
     private Vector2 position = new Vector2();
-    private Vector2 rotation = new Vector2();
     private Vector2 size = new Vector2(1, 1);
+
+    public void setGlobalZ(float newZ) {
+        if(parent == null) {
+            z = newZ;
+        } else {
+            z = newZ - parent.getGlobalZ();
+        }
+    }
+    public void setLocalZ(float newZ) {
+        z = newZ;
+    }
+
+    public void setGlobalRotation(float newRotation) {
+        if(parent == null) {
+            rotation = newRotation;
+        } else {
+            rotation = newRotation - parent.getGlobalRotation();
+        }
+    }
+    public void setLocalRotation(float newRotation) {
+        rotation = newRotation;
+    }
 
     public void setGlobalPosition(Vector2 newPosition) {
         if(parent == null) {
@@ -25,17 +48,6 @@ public class Transform {
     }
     public void setLocalPosition(Vector2 newPosition) {
         position = newPosition;
-    }
-
-    public void setGlobalRotation(Vector2 newRotation) {
-        if(parent == null) {
-            rotation = newRotation;
-        } else {
-            rotation = newRotation.subtract(parent.getGlobalRotation());
-        }
-    }
-    public void setLocalRotation(Vector2 newRotation) {
-        rotation = newRotation;
     }
 
     public void setGlobalSize(Vector2 newSize) {
@@ -50,6 +62,28 @@ public class Transform {
     }
 
 
+    public float getGlobalZ() {
+        if(parent == null) {
+            return z;
+        } else {
+            return z + parent.getGlobalZ();
+        }
+    }
+    public float getLocalZ() {
+        return z;
+    }
+
+    public float getGlobalRotation() {
+        if(parent == null) {
+            return rotation;
+        } else {
+            return parent.getGlobalRotation() + rotation;
+        }
+    }
+    public float getLocalRotation() {
+        return rotation;
+    }
+
     public Vector2 getGlobalPosition() {
         if(parent == null) {
             return position;
@@ -59,17 +93,6 @@ public class Transform {
     }
     public Vector2 getLocalPosition() {
         return position;
-    }
-
-    public Vector2 getGlobalRotation() {
-        if(parent == null) {
-            return rotation;
-        } else {
-            return parent.getGlobalRotation().add(rotation);
-        }
-    }
-    public Vector2 getLocalRotation() {
-        return rotation;
     }
 
     public Vector2 getGlobalSize() {
