@@ -6,6 +6,7 @@ import sun.rmi.runtime.Log;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,6 +33,17 @@ public class SwingCamera extends Camera {
         cameraPanel.getGraphics().drawImage(screen, 0, 0, cameraPanel);
     }
 
+    protected float[] toAWTFlatMatrix(Matrix matrix) {
+        return new float[]{
+                matrix.matrixArray[0][0],
+                matrix.matrixArray[1][0],
+                matrix.matrixArray[0][1],
+                matrix.matrixArray[1][1],
+                matrix.matrixArray[0][2],
+                matrix.matrixArray[1][2],
+        };
+    }
+
     public class SwingCameraPanel extends JPanel {
         @Override
         public void paint(Graphics g) {
@@ -49,11 +61,19 @@ public class SwingCamera extends Camera {
             g2.setColor(Color.BLACK);
             g2.fillRect(-cameraPanel.getWidth()/2, -cameraPanel.getHeight()/2, cameraPanel.getWidth(), cameraPanel.getHeight());
             for(Drawable component : componentsToDraw) {
-                g2.rotate(component.gameObject.transform.getGlobalRotation(), component.gameObject.transform.getGlobalPosition().x, component.gameObject.transform.getGlobalPosition().y);
-                g2.translate(component.gameObject.transform.getGlobalPosition().x, component.gameObject.transform.getGlobalPosition().y);
+                /*g2.translate(component.gameObject.transform.getGlobalPosition().x, component.gameObject.transform.getGlobalPosition().y);
+                g2.rotate(-component.gameObject.transform.getGlobalRotation());
+                g2.scale(component.gameObject.transform.getGlobalSize().x, component.gameObject.transform.getGlobalSize().y);
                 component.draw(g2);
-                g2.translate(-component.gameObject.transform.getGlobalPosition().x, -component.gameObject.transform.getGlobalPosition().y);
-                g2.rotate(-component.gameObject.transform.getGlobalRotation(), component.gameObject.transform.getGlobalPosition().x, component.gameObject.transform.getGlobalPosition().y);
+                g2.scale(1.0 / component.gameObject.transform.getGlobalSize().x, 1.0 / component.gameObject.transform.getGlobalSize().y);
+                g2.rotate(component.gameObject.transform.getGlobalRotation());
+                g2.translate(-component.gameObject.transform.getGlobalPosition().x, -component.gameObject.transform.getGlobalPosition().y);*/
+
+                Matrix matrix = component.gameObject.transform.getGlobalTransformMatrix();
+
+                g2.transform(new AffineTransform(toAWTFlatMatrix(matrix)));
+                component.draw(g2);
+                g2.transform(new AffineTransform(toAWTFlatMatrix(matrix.inverse())));
             }
         }
     }

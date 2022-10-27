@@ -2,15 +2,12 @@ package com.mex312.JEngine;
 
 import org.w3c.dom.traversal.TreeWalker;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
+import java.util.*;
 
 public class Transform {
     private Transform parent = null;
     private final Collection<Transform> children = new LinkedHashSet<>();
-    private final GameObject gameObject;
+    public final GameObject gameObject;
 
     private float z = 0;
     private float rotation = 0;
@@ -88,7 +85,7 @@ public class Transform {
         if(parent == null) {
             return position;
         } else {
-            return parent.getGlobalPosition().add(position.rotate(parent.getLocalRotation()).multiplyEach(parent.getLocalSize()));
+            return parent.getGlobalPosition().add(position.multiplyEach(parent.getLocalSize()).rotate(parent.getLocalRotation()));
         }
     }
     public Vector2 getLocalPosition() {
@@ -104,6 +101,22 @@ public class Transform {
     }
     public Vector2 getLocalSize() {
         return size;
+    }
+
+    public Matrix getGlobalTransformMatrix() {
+        if(parent == null) {
+            return getLocalTransformMatrix();
+        } else {
+            return parent.getGlobalTransformMatrix()
+                    .multiply(Matrix.createTranslationMatrix(position)
+                    .multiply(Matrix.createRotationMatrix(-rotation))
+                    .multiply(Matrix.createScaleMatrix(size)));
+        }
+    }
+    public Matrix getLocalTransformMatrix() {
+        return Matrix.createTranslationMatrix(position)
+                .multiply(Matrix.createRotationMatrix(-rotation))
+                .multiply(Matrix.createScaleMatrix(size));
     }
 
 

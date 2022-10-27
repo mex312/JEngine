@@ -69,8 +69,8 @@ public class Vector2 {
     }
 
     public Vector2 rotate(float angle) {
-        double cos = Math.cos(angle);
-        double sin = Math.sin(angle);
+        double cos = Math.cos(-angle);
+        double sin = Math.sin(-angle);
         return new Vector2(
                 (float)(x * cos - y * sin),
                 (float)(x * sin + y * cos)

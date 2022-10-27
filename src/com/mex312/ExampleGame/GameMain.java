@@ -29,8 +29,10 @@ public class GameMain {
     public static void main(String[] args) {
         JFrame frame = new JFrame("game");
 
-        Inputs.registerNewInputAxis(new Inputs.InputAxis(KeyEvent.VK_W, KeyEvent.VK_S), "Vertical");
-        Inputs.registerNewInputAxis(new Inputs.InputAxis(KeyEvent.VK_D, KeyEvent.VK_A), "Horizontal");
+        Inputs.registerNewInputAxis(new Inputs.InputAxis(KeyEvent.VK_W, KeyEvent.VK_S), "WS");
+        Inputs.registerNewInputAxis(new Inputs.InputAxis(KeyEvent.VK_D, KeyEvent.VK_A), "AD");
+        Inputs.registerNewInputAxis(new Inputs.InputAxis(KeyEvent.VK_UP, KeyEvent.VK_DOWN), "Vertical");
+        Inputs.registerNewInputAxis(new Inputs.InputAxis(KeyEvent.VK_RIGHT, KeyEvent.VK_LEFT), "Horizontal");
 
         GameObject cameraObj = new GameObject("Camera");
         SwingCamera cameraComp = new SwingCamera("Camera Component", cameraObj);
@@ -46,24 +48,26 @@ public class GameMain {
         head.transform.setLocalPosition(new Vector2(0, 50));
         wall.transform.setGlobalPosition(new Vector2(0, 0));
         wall.transform.setGlobalRotation((float)(Math.PI / 4));
+        wall.transform.setLocalSize(new Vector2(3, 1));
         Behavior controller = new Behavior("Player Controller", wall) {
             float time = 0;
 
             @Override
             public void Update() throws Throwable{
                 Vector2 pos = gameObject.transform.getLocalPosition();
-                gameObject.transform.setLocalPosition(pos.add(new Vector2(
-                        Inputs.getAxis("Horizontal"),
-                        Inputs.getAxis("Vertical")
-                ).normalize().multiply(400 * Time.deltaTime())));
+                float rot = gameObject.transform.getLocalRotation();
+                gameObject.transform.setLocalRotation(rot + (float)(Time.deltaTime() * Math.PI * Inputs.getAxis("Horizontal")));
+                gameObject.transform.setLocalPosition(pos.add(new Vector2(0, Inputs.getAxis("WS"))
+                        .rotate(gameObject.transform.getLocalRotation()).multiply(400 * Time.deltaTime())));
+                GameObject head = gameObject.transform.getChildFromName("Head").gameObject;
                 time += Time.deltaTime();
-                gameObject.transform.setLocalRotation(time * (float)Math.PI);
+                head.transform.setLocalRotation(time * (float)Math.PI);
             }
         };
 
         GameObject wall2 = new GameObject("Wall2");
         wall2.transform.setGlobalSize(new Vector2(200, 100));
-        wall2.transform.setGlobalPosition(new Vector2(300, 0));
+        wall2.transform.setGlobalPosition(new Vector2(200, 0));
         wall2.transform.setGlobalZ(1);
         Drawable square2 = new Rectangle("Rectangle", wall2, Color.GREEN);
 
