@@ -88,7 +88,7 @@ public class Transform {
         if(parent == null) {
             return position;
         } else {
-            return parent.getGlobalPosition().add(position);
+            return parent.getGlobalPosition().add(position.rotate(parent.getLocalRotation()).multiplyEach(parent.getLocalSize()));
         }
     }
     public Vector2 getLocalPosition() {

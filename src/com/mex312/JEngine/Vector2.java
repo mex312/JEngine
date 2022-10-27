@@ -68,6 +68,15 @@ public class Vector2 {
         return new Vector2(this.x / n, this.y / n);
     }
 
+    public Vector2 rotate(float angle) {
+        double cos = Math.cos(angle);
+        double sin = Math.sin(angle);
+        return new Vector2(
+                (float)(x * cos - y * sin),
+                (float)(x * sin + y * cos)
+        );
+    }
+
     public String toString() {
         return String.format("[%f, %f]", x, y);
     }
