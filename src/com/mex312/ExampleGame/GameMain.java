@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 
 public class GameMain {
     public static class Rectangle extends Drawable {
-        private final Color color;
+        private Color color;
 
         public Rectangle(String name, GameObject gameObject, Color color) {
             super(name, gameObject);
@@ -19,30 +19,12 @@ public class GameMain {
 
         @Override
         public void draw(Graphics2D graphics) {
-            Vector2 size = getGlobalSize();
-            Vector2 pos = getGlobalPosition();
+            Vector2 size = getLocalSize();
+            Vector2 pos = getLocalPosition();
             graphics.setColor(color);
             graphics.fillRect((int) (pos.x - size.x/2), (int) (pos.y - size.y/2), (int) size.x, (int) size.y);
         }
     }
-
-    public static class Ellipse extends Drawable {
-        private final Color color;
-
-        public Ellipse(String name, GameObject gameObject, Color color) {
-            super(name, gameObject);
-            this.color = color;
-        }
-
-        @Override
-        public void draw(Graphics2D graphics) {
-            Vector2 size = getGlobalSize();
-            Vector2 pos = getGlobalPosition();
-            graphics.setColor(color);
-            graphics.fillOval((int) (pos.x - size.x/2), (int) (pos.y - size.y/2), (int) size.x, (int) size.y);
-        }
-    }
-
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("game");
@@ -55,29 +37,35 @@ public class GameMain {
         cameraObj.transform.setGlobalPosition(new Vector2(0, 0));
 
         GameObject wall = new GameObject("Wall");
-        wall.transform.setGlobalSize(new Vector2(100, 100));
-        Drawable square = new Rectangle("Square", wall, Color.WHITE);
+        Drawable square = new Rectangle("Rectangle", wall, Color.WHITE);
+        square.setGlobalSize(new Vector2(100, 100));
+        GameObject head = new GameObject("Head");
+        head.transform.setParent(wall.transform);
+        Drawable squareHead = new Rectangle("Rectangle", head, Color.BLUE);
+        squareHead.setLocalSize(new Vector2(100, 100));
+        head.transform.setLocalPosition(new Vector2(0, 50));
         wall.transform.setGlobalPosition(new Vector2(0, 0));
+        wall.transform.setGlobalRotation((float)(Math.PI / 4));
         Behavior controller = new Behavior("Player Controller", wall) {
+            float time = 0;
+
             @Override
             public void Update() throws Throwable{
                 Vector2 pos = gameObject.transform.getLocalPosition();
                 gameObject.transform.setLocalPosition(pos.add(new Vector2(
                         Inputs.getAxis("Horizontal"),
                         Inputs.getAxis("Vertical")
-                ).normalized().multiply(400 * Time.deltaTime())));
+                ).normalize().multiply(400 * Time.deltaTime())));
+                time += Time.deltaTime();
+                gameObject.transform.setLocalRotation(time * (float)Math.PI);
             }
         };
-        GameObject head = new GameObject("Head");
-        head.transform.setLocalPosition(new Vector2(0, 100));
-        Drawable circle = new Ellipse("Circle", head, Color.GRAY);
-        head.transform.setParent(wall.transform);
 
         GameObject wall2 = new GameObject("Wall2");
         wall2.transform.setGlobalSize(new Vector2(200, 100));
         wall2.transform.setGlobalPosition(new Vector2(300, 0));
         wall2.transform.setGlobalZ(1);
-        Drawable square2 = new Rectangle("Square", wall2, Color.GREEN);
+        Drawable square2 = new Rectangle("Rectangle", wall2, Color.GREEN);
 
         frame.addKeyListener(new AWTKeyAdapter());
         frame.setContentPane(cameraComp.cameraPanel);

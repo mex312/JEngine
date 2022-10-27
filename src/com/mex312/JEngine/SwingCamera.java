@@ -49,7 +49,11 @@ public class SwingCamera extends Camera {
             g2.setColor(Color.BLACK);
             g2.fillRect(-cameraPanel.getWidth()/2, -cameraPanel.getHeight()/2, cameraPanel.getWidth(), cameraPanel.getHeight());
             for(Drawable component : componentsToDraw) {
+                g2.rotate(component.gameObject.transform.getGlobalRotation(), component.gameObject.transform.getGlobalPosition().x, component.gameObject.transform.getGlobalPosition().y);
+                g2.translate(component.gameObject.transform.getGlobalPosition().x, component.gameObject.transform.getGlobalPosition().y);
                 component.draw(g2);
+                g2.translate(-component.gameObject.transform.getGlobalPosition().x, -component.gameObject.transform.getGlobalPosition().y);
+                g2.rotate(-component.gameObject.transform.getGlobalRotation(), component.gameObject.transform.getGlobalPosition().x, component.gameObject.transform.getGlobalPosition().y);
             }
         }
     }

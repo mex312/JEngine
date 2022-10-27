@@ -18,7 +18,7 @@ public class Vector2 {
         return (float)Math.sqrt(x*x + y*y);
     }
 
-    public Vector2 normalized() {
+    public Vector2 normalize() {
         float length = getLength();
         if(length != 0) {
             return new Vector2(x / length, y / length);
