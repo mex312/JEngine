@@ -35,6 +35,7 @@ public class GameMain {
         Inputs.registerNewInputAxis(new Inputs.InputAxis(KeyEvent.VK_RIGHT, KeyEvent.VK_LEFT), "Horizontal");
 
         GameObject cameraObj = new GameObject("Camera");
+        cameraObj.transform.setLocalSize(new Vector2(2, 1));
         SwingCamera cameraComp = new SwingCamera("Camera Component", cameraObj);
         cameraObj.transform.setGlobalPosition(new Vector2(0, 0));
 
@@ -65,13 +66,24 @@ public class GameMain {
             }
         };
 
+        GameObject cursor = new GameObject("Cursor");
+        Drawable cursorSprite = new Rectangle("Cursor Sprite", cursor, Color.WHITE);
+        cursorSprite.setLocalSize(new Vector2(20, 20));
+        Behavior cursorController = new Behavior("Cursor Controller", cursor) {
+            @Override
+            public void Update() throws Throwable {
+                gameObject.transform.setGlobalPosition(cameraComp.fromScreenToWorld(Inputs.getMousePositionOnScreen()));
+            }
+        };
+
         GameObject wall2 = new GameObject("Wall2");
         wall2.transform.setGlobalSize(new Vector2(200, 100));
         wall2.transform.setGlobalPosition(new Vector2(200, 0));
         wall2.transform.setGlobalZ(1);
         Drawable square2 = new Rectangle("Rectangle", wall2, Color.GREEN);
 
-        frame.addKeyListener(new AWTKeyAdapter());
+        frame.addKeyListener(new AWTInputs.KeyAdapter());
+        frame.addMouseMotionListener(new AWTInputs.MouseMotionAdapter());
         frame.setContentPane(cameraComp.cameraPanel);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         cameraComp.cameraPanel.setPreferredSize(new Dimension(800, 600));

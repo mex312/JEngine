@@ -63,6 +63,12 @@ public class Vector2 {
     public Vector2 multiply(float n) {
         return new Vector2(this.x * n, this.y * n);
     }
+    public Vector2 multiply(Matrix matrix) {
+        return new Vector2(
+                matrix.matrixArray[0][0] * x + matrix.matrixArray[1][0] * x + matrix.matrixArray[2][0] * x,
+                matrix.matrixArray[0][1] * y + matrix.matrixArray[1][1] * y + matrix.matrixArray[2][1] * y
+        );
+    }
 
     public Vector2 divide(float n) {
         return new Vector2(this.x / n, this.y / n);

@@ -33,6 +33,39 @@ public class SwingCamera extends Camera {
         cameraPanel.getGraphics().drawImage(screen, 0, 0, cameraPanel);
     }
 
+    @Override
+    public Vector2 fromScreenToWorld(Vector2 positionOnScreen) {
+        return positionOnScreen
+                .add(1, 1)
+                .divideEach(2, -2)
+                .multiplyEach(
+                        Toolkit.getDefaultToolkit().getScreenSize().width,
+                        Toolkit.getDefaultToolkit().getScreenSize().height
+                )
+                .subtract(
+                        cameraPanel.getParent().getLocationOnScreen().x,
+                        cameraPanel.getParent().getLocationOnScreen().y
+                )
+                .divideEach(
+                        cameraPanel.getWidth(),
+                        cameraPanel.getHeight()
+                )
+                .multiplyEach(2, -2)
+                .subtract(1, -1)
+                .multiplyEach(
+                        cameraPanel.getWidth(),
+                        cameraPanel.getHeight()
+                )
+                .divideEach(2, 2)
+                .multiply(gameObject.transform.getGlobalTransformMatrix())
+                ;
+    }
+
+    @Override
+    public Vector2 fromFrameToWorld(Vector2 positionOnFrame) {
+        return null;
+    }
+
     protected float[] toAWTFlatMatrix(Matrix matrix) {
         return new float[]{
                 matrix.matrixArray[0][0],
@@ -58,8 +91,10 @@ public class SwingCamera extends Camera {
             transform.setToScale(1, -1);
             transform.translate( -gameObject.transform.getGlobalPosition().x + (float)cameraPanel.getSize().getWidth()/2, -gameObject.transform.getGlobalPosition().y - (float)cameraPanel.getSize().getHeight()/2);
             g2.setTransform(transform);
+            Matrix transformMatrix =gameObject.transform.getGlobalTransformMatrix();
             g2.setColor(Color.BLACK);
             g2.fillRect(-cameraPanel.getWidth()/2, -cameraPanel.getHeight()/2, cameraPanel.getWidth(), cameraPanel.getHeight());
+            g2.transform(new AffineTransform(toAWTFlatMatrix(transformMatrix.inverse())));
             for(Drawable component : componentsToDraw) {
                 /*g2.translate(component.gameObject.transform.getGlobalPosition().x, component.gameObject.transform.getGlobalPosition().y);
                 g2.rotate(-component.gameObject.transform.getGlobalRotation());
@@ -75,6 +110,7 @@ public class SwingCamera extends Camera {
                 component.draw(g2);
                 g2.transform(new AffineTransform(toAWTFlatMatrix(matrix.inverse())));
             }
+            g2.transform(new AffineTransform(toAWTFlatMatrix(transformMatrix)));
         }
     }
 }

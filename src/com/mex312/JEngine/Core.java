@@ -24,7 +24,7 @@ public class Core {
                             camera.drawAll(drawablesAsList);
                         }
 
-                        Inputs.updateKeyDown();
+                        Inputs.update();
                     } catch (Throwable ex) {
                         ex.printStackTrace();
                     }
