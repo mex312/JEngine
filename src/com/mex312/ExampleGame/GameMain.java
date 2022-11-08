@@ -50,6 +50,7 @@ public class GameMain {
         wall.transform.setGlobalPosition(new Vector2(0, 0));
         wall.transform.setGlobalRotation((float)(Math.PI / 4));
         //wall.transform.setLocalSize(new Vector2(3, 1));
+        RigidBody rBody = new RigidBody("Wall Rigid Body", wall);
         Behavior controller = new Behavior("Player Controller", wall) {
             float time = 0;
 
@@ -61,9 +62,9 @@ public class GameMain {
                 gameObject.transform.setLocalRotation(gameObject.transform.getGlobalPosition()
                         .subtract(cameraComp.fromScreenToWorld(Inputs.getMousePositionOnScreen()))
                         .getAtan2() - (float)(Math.PI / 2));
-                gameObject.transform.setLocalPosition(pos.add(new Vector2(0, Inputs.getAxis("WS"))
+                rBody.speed = rBody.speed.add(new Vector2(0, Inputs.getAxis("WS"))
                         .rotate(gameObject.transform.getLocalRotation())
-                        .multiply(400 * Time.deltaTime())));
+                        .multiply(10f * Time.deltaTime()));
                 GameObject head = gameObject.transform.getChildFromName("Head").gameObject;
                 time += Time.deltaTime();
                 head.transform.setLocalRotation(time * (float)Math.PI);
