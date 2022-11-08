@@ -17,6 +17,9 @@ public class Vector2 {
     public float getLength() {
         return (float)Math.sqrt(x*x + y*y);
     }
+    public float getAtan2() {
+        return -(float)Math.atan2(y, x);
+    }
 
     public Vector2 normalize() {
         float length = getLength();

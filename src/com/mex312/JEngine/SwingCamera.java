@@ -58,6 +58,7 @@ public class SwingCamera extends Camera {
                 )
                 .divideEach(2, 2)
                 .multiply(gameObject.transform.getGlobalTransformMatrix())
+                .add(gameObject.transform.getGlobalPosition())
                 ;
     }
 
@@ -89,7 +90,7 @@ public class SwingCamera extends Camera {
 
             AffineTransform transform = g2.getTransform();
             transform.setToScale(1, -1);
-            transform.translate( -gameObject.transform.getGlobalPosition().x + (float)cameraPanel.getSize().getWidth()/2, -gameObject.transform.getGlobalPosition().y - (float)cameraPanel.getSize().getHeight()/2);
+            transform.translate((float)cameraPanel.getSize().getWidth()/2, -(float)cameraPanel.getSize().getHeight()/2);
             g2.setTransform(transform);
             Matrix transformMatrix =gameObject.transform.getGlobalTransformMatrix();
             g2.setColor(Color.BLACK);

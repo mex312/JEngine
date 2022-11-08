@@ -35,7 +35,7 @@ public class GameMain {
         Inputs.registerNewInputAxis(new Inputs.InputAxis(KeyEvent.VK_RIGHT, KeyEvent.VK_LEFT), "Horizontal");
 
         GameObject cameraObj = new GameObject("Camera");
-        cameraObj.transform.setLocalSize(new Vector2(2, 1));
+        cameraObj.transform.setLocalSize(new Vector2(1, 1));
         SwingCamera cameraComp = new SwingCamera("Camera Component", cameraObj);
         cameraObj.transform.setGlobalPosition(new Vector2(0, 0));
 
@@ -49,7 +49,7 @@ public class GameMain {
         head.transform.setLocalPosition(new Vector2(0, 50));
         wall.transform.setGlobalPosition(new Vector2(0, 0));
         wall.transform.setGlobalRotation((float)(Math.PI / 4));
-        wall.transform.setLocalSize(new Vector2(3, 1));
+        //wall.transform.setLocalSize(new Vector2(3, 1));
         Behavior controller = new Behavior("Player Controller", wall) {
             float time = 0;
 
@@ -57,12 +57,23 @@ public class GameMain {
             public void Update() throws Throwable{
                 Vector2 pos = gameObject.transform.getLocalPosition();
                 float rot = gameObject.transform.getLocalRotation();
-                gameObject.transform.setLocalRotation(rot + (float)(Time.deltaTime() * Math.PI * Inputs.getAxis("Horizontal")));
+                //gameObject.transform.setLocalRotation(rot + (float)(Time.deltaTime() * Math.PI * Inputs.getAxis("Horizontal")));
+                gameObject.transform.setLocalRotation(gameObject.transform.getGlobalPosition()
+                        .subtract(cameraComp.fromScreenToWorld(Inputs.getMousePositionOnScreen()))
+                        .getAtan2() - (float)(Math.PI / 2));
                 gameObject.transform.setLocalPosition(pos.add(new Vector2(0, Inputs.getAxis("WS"))
-                        .rotate(gameObject.transform.getLocalRotation()).multiply(400 * Time.deltaTime())));
+                        .rotate(gameObject.transform.getLocalRotation())
+                        .multiply(400 * Time.deltaTime())));
                 GameObject head = gameObject.transform.getChildFromName("Head").gameObject;
                 time += Time.deltaTime();
                 head.transform.setLocalRotation(time * (float)Math.PI);
+            }
+        };
+
+        Behavior cameraController = new Behavior("Camera Contoller", cameraObj) {
+            @Override
+            public void Update() throws Throwable {
+                gameObject.transform.setGlobalPosition(wall.transform.getGlobalPosition());
             }
         };
 
