@@ -12,6 +12,10 @@ public class Time {
         return deltaTime;
     }
 
+    public static long deltaTimeInNanos() {
+        return (long)((double)deltaTime * 1000000000.0);
+    }
+
     public static void initialize() {
         lastSeconds = Instant.now().getEpochSecond();
         lastNanos = Instant.now().getNano();
@@ -33,7 +37,5 @@ public class Time {
         }
 
         deltaTime = (float)((double)deltaSeconds + (double)deltaNanos / 1000000000.0);
-
-        System.out.println(deltaTime);
     }
 }

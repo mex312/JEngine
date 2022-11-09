@@ -51,6 +51,8 @@ public class GameMain {
         wall.transform.setGlobalRotation((float)(Math.PI / 4));
         //wall.transform.setLocalSize(new Vector2(3, 1));
         RigidBody rBody = new RigidBody("Wall Rigid Body", wall);
+        rBody.drag = 1;
+        rBody.gravity = new Vector2(0f, -100f);
         Behavior controller = new Behavior("Player Controller", wall) {
             float time = 0;
 
@@ -64,7 +66,7 @@ public class GameMain {
                         .getAtan2() - (float)(Math.PI / 2));
                 rBody.speed = rBody.speed.add(new Vector2(0, Inputs.getAxis("WS"))
                         .rotate(gameObject.transform.getLocalRotation())
-                        .multiply(10f * Time.deltaTime()));
+                        .multiply(1000f * Time.deltaTime()));
                 GameObject head = gameObject.transform.getChildFromName("Head").gameObject;
                 time += Time.deltaTime();
                 head.transform.setLocalRotation(time * (float)Math.PI);
@@ -72,9 +74,21 @@ public class GameMain {
         };
 
         Behavior cameraController = new Behavior("Camera Contoller", cameraObj) {
+            int fixedTime = 0;
+            float floatTime = 0;
+
+            private GameObject wall;
+
             @Override
-            public void Update() throws Throwable {
+            public void Start() {
+                wall = Core.findGameObjectByName("Wall");
+            }
+
+            @Override
+            public void Update() {
                 gameObject.transform.setGlobalPosition(wall.transform.getGlobalPosition());
+
+                floatTime += Time.deltaTime();
             }
         };
 

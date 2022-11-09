@@ -5,17 +5,22 @@ public class RigidBody extends Behavior{
         super(name, gameObject);
     }
 
-    public Vector2 gravity = new Vector2(0, -1);
+    public Vector2 gravity = new Vector2(0, -500);
     public Vector2 speed = new Vector2();
-    public float drag = 1;
-    public float angularSpeed = 0;
+    public float drag = 0.1f;
+    public float angularSpeed = 0f;
     public float angularDrag = 0.1f;
 
     @Override
-    public void Update() throws Throwable {
-        gameObject.transform.setLocalPosition(gameObject.transform.getLocalPosition().add(speed));
-        gameObject.transform.setLocalRotation(gameObject.transform.getLocalRotation() + angularSpeed);
-        speed = speed.subtract(speed.multiply(drag * Time.deltaTime())).add(gravity.multiply(Time.deltaTime()));
-        angularSpeed -= angularSpeed * angularDrag * Time.deltaTime();
+    public void Update() {
+
+    }
+
+    @Override
+    public void FixedUpdate() {
+        speed = speed.subtract(speed.multiply(drag * 0.02f)).add(gravity.multiply(0.02f));
+        angularSpeed -= angularSpeed * angularDrag * 0.02f;
+        gameObject.transform.setLocalPosition(gameObject.transform.getLocalPosition().add(speed.multiply(0.02f)));
+        gameObject.transform.setLocalRotation(gameObject.transform.getLocalRotation() + angularSpeed * 0.02f);
     }
 }

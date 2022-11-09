@@ -5,5 +5,9 @@ public abstract class Behavior extends Component{
         super(name, gameObject);
     }
 
-    public abstract void Update() throws Throwable;
+    public void Start() throws  Throwable {}
+
+    public void Update() throws Throwable {}
+
+    public void FixedUpdate() throws Throwable {}
 }

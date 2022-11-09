@@ -40,7 +40,7 @@ public class Inputs {
     }
 
     public static boolean getKeyDown(int keyCode) {
-        return false;
+        return keyDownTable.getOrDefault(keyCode, false);
     }
 
     public static int getAxis(String axisName) throws Exception {
